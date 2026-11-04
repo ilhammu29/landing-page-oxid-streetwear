@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
+import { LoadingScreen } from '@/components/LoadingScreen';
+import { PromoVideoModal } from '@/components/PromoVideoModal';
 import { Navbar } from '@/components/Navbar';
 import { AuthModal } from '@/components/AuthModal';
-import { IntroMotionCinema } from '@/components/IntroMotionCinema';
 import { HeroSlider } from '@/components/HeroSlider';
 import { CreatorGrid } from '@/components/CreatorGrid';
 import { FullBleedTestimonial } from '@/components/FullBleedTestimonial';
@@ -40,15 +41,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0c] text-[#f5f5f0] antialiased selection:bg-[#00ff66] selection:text-black font-sans">
+      {/* High-Speed Kinetic Japanese Loading Screen */}
+      <LoadingScreen />
+
       {/* Top Precision Scroll Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-[#00ff66] origin-left z-50 pointer-events-none shadow-[0_0_8px_#00ff66]"
+        className="fixed top-0 left-0 right-0 h-[2px] bg-[#00ff66] origin-left z-40 pointer-events-none shadow-[0_0_8px_#00ff66]"
         style={{ scaleX }}
       />
 
-      {/* 15-Second Japanese Motion Cinema Opening Overlay */}
-      <IntroMotionCinema
-        forceOpen={promoOpen}
+      {/* Standalone Promo Video Modal (Triggered by Navbar or Buttons) */}
+      <PromoVideoModal
+        isOpen={promoOpen}
         onClose={() => setPromoOpen(false)}
       />
 
