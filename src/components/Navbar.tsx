@@ -22,18 +22,18 @@ export function Navbar({ onNavigate, onOpenAuth }: NavbarProps) {
   }, []);
 
   const collectionCategories = [
-    { title: 'Drop 01 // Tactical Parka', desc: 'Cordura weatherproof ballistic outerwear', tag: 'LIMITED' },
-    { title: 'Drop 02 // Cyber Kimono', desc: 'Tokyo brutalist silhouette with neon webbing', tag: 'SOLD OUT' },
-    { title: 'Drop 03 // Modular Vest', desc: 'Fidlock magnetic quick-release hardware', tag: 'IN STOCK' },
-    { title: 'Drop 04 // Laser Cargos', desc: 'Wide-leg technical trousers with neon bungees', tag: 'FEW LEFT' },
-    { title: 'Drop 05 // Heavy Hoodie', desc: '500GSM milk white boxy brutalist fleece', tag: 'NEW' },
+    { title: 'Drop 01 — Tactical Parka', desc: 'Cordura weatherproof ballistic outerwear' },
+    { title: 'Drop 02 — Cyber Kimono', desc: 'Tokyo brutalist silhouette with neon webbing' },
+    { title: 'Drop 03 — Modular Vest', desc: 'Fidlock magnetic quick-release hardware' },
+    { title: 'Drop 04 — Laser Cargos', desc: 'Wide-leg technical trousers with neon bungees' },
+    { title: 'Drop 05 — Heavy Hoodie', desc: '500GSM milk white boxy brutalist fleece' },
   ];
 
   const specsLinks = [
     { title: 'Materials & Cordura Shell', desc: 'Grade-A 500D ballistic nylon & DWR waterproofing' },
     { title: 'Fidlock® Hardware', desc: 'German magnetic quick-release tactical buckles' },
     { title: 'NFC Drop Verification', desc: 'Encrypted chip woven into every garment hem' },
-    { title: '120BPM Kinetic Fit', desc: 'Ergonomic articulated joints for street movement' },
+    { title: 'Kinetic Movement Fit', desc: 'Ergonomic articulated joints for street movement' },
   ];
 
   return (
@@ -83,9 +83,6 @@ export function Navbar({ onNavigate, onOpenAuth }: NavbarProps) {
                           </div>
                           <div className="text-xs text-[#a1a1aa] mt-0.5">{c.desc}</div>
                         </div>
-                        <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-[#00ff66]/10 text-[#00ff66] border border-[#00ff66]/30">
-                          {c.tag}
-                        </span>
                       </div>
                     ))}
                   </div>
@@ -137,7 +134,7 @@ export function Navbar({ onNavigate, onOpenAuth }: NavbarProps) {
               onClick={() => onNavigate('direct-access')}
               className="text-[#f5f5f0] hover:text-[#00ff66] transition-colors"
             >
-              120BPM Runway
+              Runway Film
             </button>
 
             <button
@@ -160,17 +157,17 @@ export function Navbar({ onNavigate, onOpenAuth }: NavbarProps) {
             onClick={() => onNavigate('hero')}
             className="cursor-pointer flex items-center gap-3 group"
           >
-            {/* Brutalist Geometric Mark with Neon Dot */}
-            <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-[#18181b] border border-[#27272a] group-hover:border-[#00ff66] transition-colors">
-              <span className="w-3 h-3 rounded-full bg-[#00ff66] shadow-[0_0_12px_#00ff66]" />
+            {/* Brutalist Geometric Mark */}
+            <div className="relative flex items-center justify-center w-7 h-7 rounded bg-[#18181b] border border-[#27272a] group-hover:border-[#00ff66] transition-colors">
+              <span className="w-2.5 h-2.5 rounded-sm bg-[#faf9f6] group-hover:bg-[#00ff66] transition-colors" />
             </div>
 
             <div className="flex flex-col">
-              <span className="font-display font-extrabold text-xl sm:text-2xl tracking-[-0.04em] uppercase text-[#faf9f6] group-hover:text-[#00ff66] transition-colors">
+              <span className="font-display font-extrabold text-xl sm:text-2xl tracking-[-0.04em] uppercase text-[#faf9f6] group-hover:text-[#00ff66] transition-colors leading-none">
                 OXID STUDIO
               </span>
-              <span className="text-[9px] font-mono tracking-widest text-[#00ff66] -mt-1 uppercase">
-                Atelier // 120BPM
+              <span className="text-[9px] font-mono tracking-widest text-[#a1a1aa] uppercase mt-1">
+                Autonomous Atelier
               </span>
             </div>
           </div>
@@ -235,8 +232,7 @@ export function Navbar({ onNavigate, onOpenAuth }: NavbarProps) {
                 }}
                 className="py-2 text-[#faf9f6] border-b border-[#18181b] flex items-center justify-between"
               >
-                <span>120BPM Runway</span>
-                <span className="w-2 h-2 rounded-full bg-[#00ff66] animate-pulse" />
+                <span>Runway Film</span>
               </div>
               <div
                 onClick={() => {

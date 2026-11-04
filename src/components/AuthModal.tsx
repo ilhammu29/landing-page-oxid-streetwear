@@ -59,11 +59,11 @@ export function AuthModal({ isOpen, mode, onClose, onSwitchMode }: AuthModalProp
 
         {/* Modal Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-[#18181b] border border-[#00ff66]/60 shadow-[0_0_15px_rgba(0,255,102,0.3)] flex items-center justify-center text-[#00ff66] font-display font-black text-xl mx-auto mb-3">
-            <span className="w-3 h-3 rounded-full bg-[#00ff66] shadow-[0_0_8px_#00ff66]" />
+          <div className="w-10 h-10 rounded-xl bg-[#18181b] border border-[#27272a] flex items-center justify-center text-[#faf9f6] font-display font-black text-sm mx-auto mb-3">
+            OX
           </div>
           <div className="text-[10px] font-mono text-[#00ff66] uppercase tracking-widest mb-1">
-            OXID STUDIO // ATELIER SECURITY
+            OXID STUDIO · Atelier Security
           </div>
           <h3 className="text-2xl font-display font-extrabold text-[#faf9f6] uppercase">
             {mode === 'signup' ? 'Request Drop Credentials' : 'Client Terminal Login'}

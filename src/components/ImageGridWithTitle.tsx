@@ -12,28 +12,28 @@ const CARDS = [
   {
     id: 'card1',
     image: '/fashion/look3.jpg',
-    code: 'SPEC 01 // MODULAR VEST',
+    code: 'Spec 01 · Modular Vest',
     name: 'Fidlock® Magnetic Rig',
     speed: -25,
   },
   {
     id: 'card2',
     image: '/fashion/look7.jpg',
-    code: 'SPEC 02 // CARBON UNIT',
+    code: 'Spec 02 · Carbon Unit',
     name: 'Luminescent Sole High-Top',
     speed: -45,
   },
   {
     id: 'card3',
     image: '/fashion/look6.jpg',
-    code: 'SPEC 03 // 500GSM FLEECE',
+    code: 'Spec 03 · 500GSM Fleece',
     name: 'Brutalist Milk White Hoodie',
     speed: -35,
   },
   {
     id: 'card4',
     image: '/fashion/look1.jpg',
-    code: 'SPEC 04 // BALLISTIC SHELL',
+    code: 'Spec 04 · Ballistic Shell',
     name: 'Cordura Storm Parka',
     speed: -55,
   },
@@ -82,9 +82,8 @@ export function ImageGridWithTitle() {
     <section
       id="creative-control"
       ref={containerRef}
-      className="relative w-full overflow-hidden select-none bg-[#0a0a0c]"
+      className="relative w-full overflow-hidden select-none bg-[#0a0a0c] md:min-h-[1700px]"
       style={{
-        minHeight: '1700px',
         backgroundImage: `
           radial-gradient(70% 60% at 50% 30%, rgba(0, 255, 102, 0.05) 0%, rgba(10, 10, 12, 0) 70%),
           radial-gradient(100% 100% at 80% 80%, rgba(24, 24, 27, 0.7) 0%, rgba(10, 10, 12, 1) 100%)
@@ -103,8 +102,8 @@ export function ImageGridWithTitle() {
         }}
       />
 
-      {/* 1920px Centered Grid Container */}
-      <div className="relative w-full max-w-[1920px] mx-auto h-[1700px] overflow-hidden">
+      {/* 1920px Centered Grid Container (Desktop) */}
+      <div className="hidden md:block relative w-full max-w-[1920px] mx-auto h-[1700px] overflow-hidden">
         {/* Card 1: Modular Vest (Top Right) */}
         <div
           ref={(el) => {
@@ -164,7 +163,7 @@ export function ImageGridWithTitle() {
           style={{ top: '34rem' }}
         >
           <span className="block text-[11px] font-mono text-[#00ff66] tracking-[0.3em] uppercase mb-4">
-            // MODULAR ARCHITECTURE //
+            Modular Architecture
           </span>
           <span className="block font-display font-black text-6xl sm:text-8xl md:text-9xl lg:text-[7.8rem] leading-[0.88] tracking-[-0.04em] text-[#faf9f6]">
             COMPLETE
@@ -235,9 +234,8 @@ export function ImageGridWithTitle() {
           style={{ top: '124rem' }}
         >
           <div className="p-8 rounded-3xl bg-[#121214]/90 backdrop-blur-xl border border-[#27272a] space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#00ff66]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00ff66]" />
-              MODULAR HARDWARE MATRIX
+            <div className="text-xs font-mono uppercase tracking-widest text-[#00ff66]">
+              Modular Hardware Matrix
             </div>
             <h3 className="text-2xl sm:text-3xl font-display font-bold text-[#faf9f6]">
               Engineered with zero commercial compromise.
@@ -248,14 +246,77 @@ export function ImageGridWithTitle() {
           </div>
 
           <div className="p-8 rounded-3xl bg-[#121214]/90 backdrop-blur-xl border border-[#27272a] space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#00ff66]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00ff66]" />
-              NFC ENCRYPTED PROVENANCE
+            <div className="text-xs font-mono uppercase tracking-widest text-[#00ff66]">
+              Cryptographic Provenance
             </div>
             <h3 className="text-2xl sm:text-3xl font-display font-bold text-[#faf9f6]">
               Cryptographic authenticity in every drop.
             </h3>
             <p className="text-sm font-mono text-[#a1a1aa] leading-relaxed">
+              Each piece contains an encrypted cryptographic microchip embedded beneath the woven atelier label, giving you irreversible ownership verification and VIP access to future drops.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Stacked View */}
+      <div className="md:hidden px-6 py-20 space-y-12">
+        <div className="text-center">
+          <span className="block text-[10px] font-mono text-[#00ff66] tracking-[0.25em] uppercase mb-2">
+            Modular Architecture
+          </span>
+          <h2 className="font-display font-black text-4xl sm:text-5xl leading-[0.92] tracking-[-0.04em] uppercase text-[#faf9f6]">
+            COMPLETE <br />
+            <span className="font-light text-[#f5f5f0]">TECHNICAL</span> <br />
+            <span className="text-[#00ff66]">CONTROL</span>
+          </h2>
+        </div>
+
+        {/* Responsive Mobile Card Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {CARDS.map((c) => (
+            <div
+              key={c.id}
+              className="rounded-2xl overflow-hidden border border-[#27272a] bg-[#121214] shadow-xl"
+            >
+              <div className="relative aspect-[3/4]">
+                <img
+                  src={c.image}
+                  alt={c.name}
+                  className="w-full h-full object-cover filter brightness-[0.95]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="text-[10px] font-mono text-[#00ff66] block uppercase tracking-widest">{c.code}</span>
+                  <span className="text-base font-display font-bold text-[#faf9f6]">{c.name}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Editorial Blocks on Mobile */}
+        <div className="space-y-4">
+          <div className="p-6 rounded-2xl bg-[#121214] border border-[#27272a] space-y-2">
+            <div className="text-xs font-mono uppercase tracking-widest text-[#00ff66]">
+              Modular Hardware Matrix
+            </div>
+            <h3 className="text-xl font-display font-bold text-[#faf9f6]">
+              Engineered with zero commercial compromise.
+            </h3>
+            <p className="text-xs font-mono text-[#a1a1aa] leading-relaxed">
+              Every seam is ultrasound-sealed. Outer fabrics are treated with hydrophobic nanotech, while modular magnetic Fidlock® attachment points let you reconfigure your kit in seconds.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-[#121214] border border-[#27272a] space-y-2">
+            <div className="text-xs font-mono uppercase tracking-widest text-[#00ff66]">
+              Cryptographic Provenance
+            </div>
+            <h3 className="text-xl font-display font-bold text-[#faf9f6]">
+              Cryptographic authenticity in every drop.
+            </h3>
+            <p className="text-xs font-mono text-[#a1a1aa] leading-relaxed">
               Each piece contains an encrypted cryptographic microchip embedded beneath the woven atelier label, giving you irreversible ownership verification and VIP access to future drops.
             </p>
           </div>

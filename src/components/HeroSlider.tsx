@@ -27,62 +27,62 @@ const SLIDES: SlideItem[] = [
     id: 'drop01',
     line1: 'SOVEREIGN',
     line2: 'STREETWEAR',
-    creatorName: 'DROP 01 // TACTICAL PARKA',
+    creatorName: 'Drop 01 — Tactical Parka',
     creatorAvatar: '/fashion/look1.jpg',
     creatorBio: 'Weatherproof ballistic cordura with acid neon webbing',
     creatorUrl: '#creator-grid',
     mediaType: 'video',
     mediaUrl: '/fashion/oxid-runway-120bpm.mp4',
     posterUrl: '/fashion/look1.jpg',
-    tag: '120BPM RUNWAY CUT',
+    tag: 'Autumn Runway',
   },
   {
     id: 'drop02',
     line1: 'ENGINEERED',
     line2: 'CYBER BRUTALISM',
-    creatorName: 'DROP 02 // TOKYO KIMONO',
+    creatorName: 'Drop 02 — Tokyo Kimono',
     creatorAvatar: '/fashion/look2.jpg',
     creatorBio: 'Avant-garde oversized drape with laser-bonded seams',
     creatorUrl: '#creator-grid',
     mediaType: 'image',
     mediaUrl: '/fashion/look2.jpg',
-    tag: 'LIMITED CAPSULE',
+    tag: 'Limited Capsule',
   },
   {
     id: 'drop03',
     line1: 'MODULAR',
     line2: 'TACTICAL COUTURE',
-    creatorName: 'DROP 03 // CHEST RIG VEST',
+    creatorName: 'Drop 03 — Chest Rig Vest',
     creatorAvatar: '/fashion/look3.jpg',
-    creatorBio: 'Fidlock® magnetic quick-release & utility cargo specs',
+    creatorBio: 'Fidlock® magnetic quick-release and utility cargo specs',
     creatorUrl: '#creator-grid',
     mediaType: 'image',
     mediaUrl: '/fashion/look3.jpg',
-    tag: 'HARDWARE SPEC',
+    tag: 'Hardware Spec',
   },
   {
     id: 'drop04',
     line1: 'KINETIC',
     line2: 'RUNWAY MOVEMENT',
-    creatorName: 'DROP 04 // LASER CARGO',
+    creatorName: 'Drop 04 — Laser Cargo',
     creatorAvatar: '/fashion/look4.jpg',
-    creatorBio: 'Articulated ballistic pants engineered for 120BPM pace',
+    creatorBio: 'Articulated ballistic pants engineered for kinetic movement',
     creatorUrl: '#creator-grid',
     mediaType: 'image',
     mediaUrl: '/fashion/look4.jpg',
-    tag: 'HIGH-VIS WEAPONRY',
+    tag: 'High-Vis Spec',
   },
   {
     id: 'drop05',
     line1: 'HEAVYWEIGHT',
     line2: '500GSM FLEECE',
-    creatorName: 'DROP 05 // MILK HOODIE',
+    creatorName: 'Drop 05 — Milk Hoodie',
     creatorAvatar: '/fashion/look6.jpg',
     creatorBio: 'Milk white boxy brutalism with high-density neon ink',
     creatorUrl: '#creator-grid',
     mediaType: 'image',
     mediaUrl: '/fashion/look6.jpg',
-    tag: 'SIGNATURE DROP',
+    tag: 'Signature Drop',
   },
 ];
 
@@ -359,21 +359,15 @@ export function HeroSlider({ onNavigate, onOpenAuth }: HeroSliderProps) {
         ))}
       </div>
 
-      {/* Top Streetwear Meta Status Bar */}
-      <div className="relative z-20 max-w-[1440px] w-full mx-auto px-6 sm:px-12 flex items-center justify-between text-xs font-mono uppercase tracking-widest text-[#a1a1aa]">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#00ff66] animate-ping" />
-          <span className="text-[#00ff66] font-bold">120BPM ATELIER</span>
-          <span className="text-[#3f3f46]">{'//'}</span>
-          <span>AUTUMN/WINTER CAPSULE</span>
+      {/* Top Editorial Status Line */}
+      <div className="relative z-20 max-w-[1440px] w-full mx-auto px-6 sm:px-12 flex items-center justify-between text-[10px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-[#a1a1aa]">
+        <div className="flex items-center gap-3">
+          <span className="text-[#faf9f6] font-medium tracking-wider">Autumn Winter Capsule</span>
+          <span className="text-[#3f3f46]">·</span>
+          <span className="text-[#a1a1aa]">Oxid Studio Edition</span>
         </div>
-        <div className="hidden sm:flex items-center gap-4">
-          <span className="border border-[#27272a] px-2.5 py-0.5 rounded-full text-[10px] text-[#f5f5f0]">
-            NFC ENCRYPTED
-          </span>
-          <span className="text-[#00ff66] text-[10px] font-bold">
-            DROP STATUS: ACTIVE
-          </span>
+        <div className="hidden sm:flex items-center gap-4 text-[11px] text-[#a1a1aa] tracking-widest">
+          <span>Edition 01 — 05</span>
         </div>
       </div>
 
@@ -423,13 +417,6 @@ export function HeroSlider({ onNavigate, onOpenAuth }: HeroSliderProps) {
         className="relative z-20 max-w-[1440px] w-full mx-auto px-6 sm:px-12 flex-1 flex flex-col justify-center will-change-transform"
       >
         <div className="max-w-6xl">
-          {/* Streetwear Tag Badge */}
-          <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-md bg-[#18181b] border border-[#27272a] text-[11px] font-mono tracking-widest text-[#00ff66] uppercase">
-            <span>{slide.tag}</span>
-            <span className="w-1 h-1 rounded-full bg-[#00ff66]" />
-            <span className="text-[#a1a1aa]">ATELIER EDITION</span>
-          </div>
-
           {/* Big Editorial Headline in Milk White */}
           <h1 className="text-[7.2vw] sm:text-[5.6vw] md:text-6xl lg:text-[5.4rem] font-display font-extrabold tracking-[-0.04em] leading-[0.92] mb-8 text-[#faf9f6] uppercase overflow-hidden">
             <span

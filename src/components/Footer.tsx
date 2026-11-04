@@ -33,27 +33,27 @@ export function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-2.5 text-xs font-mono text-[#a1a1aa]">
               <li>
                 <button onClick={() => onNavigate('creator-grid')} className="hover:text-[#00ff66] transition">
-                  Drop 01 // Tactical Parka
+                  Drop 01 — Tactical Parka
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('creator-grid')} className="hover:text-[#00ff66] transition">
-                  Drop 02 // Cyber Kimono
+                  Drop 02 — Cyber Kimono
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('creator-grid')} className="hover:text-[#00ff66] transition">
-                  Drop 03 // Modular Rig
+                  Drop 03 — Modular Rig
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('creator-grid')} className="hover:text-[#00ff66] transition">
-                  Drop 04 // Laser Cargos
+                  Drop 04 — Laser Cargos
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('creator-grid')} className="hover:text-[#00ff66] transition">
-                  Drop 05 // Milk Hoodie
+                  Drop 05 — Milk Hoodie
                 </button>
               </li>
             </ul>
@@ -82,7 +82,7 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
               <li>
                 <button onClick={() => onNavigate('direct-access')} className="hover:text-[#00ff66] transition">
-                  120BPM Kinetic Motion
+                  Kinetic Garment Ergonomics
                 </button>
               </li>
               <li>
@@ -106,7 +106,7 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
               <li>
                 <button onClick={() => onNavigate('direct-access')} className="hover:text-[#00ff66] transition">
-                  120BPM Runway Broadcast
+                  Runway Film Archive
                 </button>
               </li>
               <li>

@@ -14,19 +14,18 @@ export function GrandFinaleCTA({ onOpenAuth }: GrandFinaleCTAProps) {
 
       <div className="max-w-4xl mx-auto flex flex-col items-center relative z-10">
         {/* OXID STUDIO Kinetic Mark */}
-        <div className="w-24 h-24 sm:w-32 sm:h-32 mb-8 cursor-pointer group flex items-center justify-center">
-          <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-[#121214] border border-[#27272a] group-hover:border-[#00ff66] flex items-center justify-center transition-all duration-500 shadow-[0_0_30px_rgba(0,255,102,0.2)] group-hover:shadow-[0_0_50px_rgba(0,255,102,0.5)]">
-            <span className="w-8 h-8 rounded-full bg-[#00ff66] shadow-[0_0_20px_#00ff66] animate-pulse" />
+        <div className="w-20 h-20 sm:w-24 sm:h-24 mb-8 cursor-pointer group flex items-center justify-center">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#121214] border border-[#27272a] group-hover:border-[#00ff66] flex items-center justify-center transition-all duration-500 shadow-xl">
+            <span className="w-5 h-5 rounded-sm bg-[#faf9f6] group-hover:bg-[#00ff66] transition-colors" />
           </div>
         </div>
 
         {/* Grand Headline in Milk White */}
-        <div className="inline-flex items-center gap-2 mb-4 text-xs font-mono uppercase tracking-[0.25em] text-[#00ff66]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#00ff66]" />
-          <span>AUTONOMOUS COUTURE ARCHIVE</span>
+        <div className="mb-4 text-xs font-mono uppercase tracking-[0.25em] text-[#00ff66]">
+          Autonomous Couture Archive
         </div>
 
-        <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-[7.2rem] font-display font-black tracking-[-0.04em] text-[#faf9f6] leading-[0.92] mb-10 uppercase">
+        <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-[6.2rem] font-display font-black tracking-[-0.04em] text-[#faf9f6] leading-[0.92] mb-10 uppercase">
           ENTER THE <br />
           <span className="text-[#00ff66]">SOVEREIGN</span> ATELIER
         </h2>

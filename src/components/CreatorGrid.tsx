@@ -24,77 +24,77 @@ interface LookItem {
 const LOOKS: LookItem[] = [
   {
     id: 'look-01',
-    code: 'OX-01 // TACTICAL',
+    code: 'OX-01 Tactical',
     name: 'Ballistic Parka Shell',
-    category: 'OUTERWEAR',
+    category: 'Outerwear',
     image: '/fashion/look1.jpg',
-    spec: 'Cordura 500D // DWR Coating',
+    spec: 'Cordura 500D · DWR Coating',
     width: 390,
     height: 490,
     marginTop: 60,
   },
   {
     id: 'look-02',
-    code: 'OX-02 // KIMONO',
+    code: 'OX-02 Kimono',
     name: 'Cyber Atelier Drape',
-    category: 'AVANT-GARDE',
+    category: 'Avant-Garde',
     image: '/fashion/look2.jpg',
-    spec: 'Laser Seams // Acid Webbing',
+    spec: 'Laser Seams · Acid Webbing',
     width: 430,
     height: 540,
     marginTop: -30,
   },
   {
     id: 'look-03',
-    code: 'OX-03 // MODULAR',
+    code: 'OX-03 Modular',
     name: 'Tactical Chest Rig',
-    category: 'HARDWARE',
+    category: 'Hardware',
     image: '/fashion/look3.jpg',
-    spec: 'Fidlock® Buckles // Molle Matrix',
+    spec: 'Fidlock® Buckles · Molle Matrix',
     width: 580,
     height: 580,
     marginTop: 70,
   },
   {
     id: 'look-04',
-    code: 'OX-04 // RUNWAY',
+    code: 'OX-04 Runway',
     name: 'Laser Bungee Cargos',
-    category: 'TROUSERS',
+    category: 'Trousers',
     image: '/fashion/look4.jpg',
-    spec: 'Articulated Knee // 120BPM Fit',
+    spec: 'Articulated Knee · Kinetic Fit',
     width: 360,
     height: 460,
     marginTop: -80,
   },
   {
     id: 'look-05',
-    code: 'OX-05 // DIRECTOR',
+    code: 'OX-05 Director',
     name: 'Chiaroscuro Tailored Coat',
-    category: 'COUTURE',
+    category: 'Couture',
     image: '/fashion/look5.jpg',
-    spec: 'Milk Collar // Sculptural Wool',
+    spec: 'Milk Collar · Sculptural Wool',
     width: 340,
     height: 440,
     marginTop: 40,
   },
   {
     id: 'look-06',
-    code: 'OX-06 // HEAVY',
+    code: 'OX-06 Heavy',
     name: '500GSM Boxy Hoodie',
-    category: 'FLEECE',
+    category: 'Fleece',
     image: '/fashion/look6.jpg',
-    spec: 'Milk White // Neon Brutalist Print',
+    spec: 'Milk White · Neon Screenprint',
     width: 440,
     height: 520,
     marginTop: -40,
   },
   {
     id: 'look-07',
-    code: 'OX-07 // SNEAKER',
+    code: 'OX-07 Sneaker',
     name: 'Carbon High-Top Unit',
-    category: 'FOOTWEAR',
+    category: 'Footwear',
     image: '/fashion/look7.jpg',
-    spec: 'Luminescent Sole // Carbon Plate',
+    spec: 'Luminescent Sole · Carbon Plate',
     width: 370,
     height: 470,
     marginTop: 30,
@@ -124,11 +124,18 @@ export function CreatorGrid() {
     const offsets: number[] = [];
     const widths: number[] = [];
 
-    items.forEach((item) => {
+    items.forEach((item, idx) => {
       const w = item.width * scale;
       offsets.push(cumulative);
       widths.push(w);
       cumulative += w + gap;
+
+      const el = cardElementsRef.current[idx];
+      if (el) {
+        el.style.width = `${w}px`;
+        el.style.height = `${item.height * scale}px`;
+        el.style.marginTop = `${item.marginTop * scale}px`;
+      }
     });
 
     const totalTrackLength = cumulative;
@@ -236,9 +243,8 @@ export function CreatorGrid() {
 
       {/* Bottom Left Paragraph Copy with mix-blend-exclusion */}
       <div className="absolute left-6 sm:left-14 md:left-20 bottom-16 sm:bottom-24 z-30 pointer-events-none text-[#f5f5f0] mix-blend-exclusion max-w-sm sm:max-w-md select-none text-sm sm:text-base font-mono leading-relaxed">
-        <div className="text-[#00ff66] font-bold text-xs uppercase tracking-widest mb-1.5 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#00ff66] inline-block shadow-[0_0_8px_#00ff66]" />
-          ARCHIVE DROP 01-07
+        <div className="text-[#00ff66] font-bold text-xs uppercase tracking-widest mb-1.5">
+          Archive Collection 01 — 07
         </div>
         Engineered for high-density environments. Every garment is cut from ballistic cordura, technical membranes, and magnetic hardware in limited sovereign runs.
       </div>
@@ -288,13 +294,6 @@ export function CreatorGrid() {
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter brightness-[0.92] contrast-[1.1] group-hover:brightness-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c]/90 via-[#0a0a0c]/20 to-transparent pointer-events-none" />
-
-                {/* Top Left Spec Badge */}
-                <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-md bg-[#0a0a0c]/80 backdrop-blur-md border border-[#27272a] text-[10px] font-mono tracking-widest text-[#00ff66] uppercase">
-                    {c.category}
-                  </span>
-                </div>
 
                 {/* Bottom Garment Name Tag with Technical Specs */}
                 <div className="absolute bottom-5 left-5 right-5 z-10 flex items-end justify-between text-white">

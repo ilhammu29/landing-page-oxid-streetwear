@@ -3,13 +3,13 @@ import './globals.css';
 import { SmoothScroll } from '@/components/SmoothScroll';
 
 export const metadata: Metadata = {
-  title: 'OXID STUDIO — Luxury Technical Streetwear Atelier // Drops',
+  title: 'OXID STUDIO — Luxury Technical Streetwear Atelier',
   description:
-    'Sovereign haute-streetwear atelier. Engineered technical outerwear, avant-garde silhouettes, and 120BPM runway motion in matte black, milk white, and acid neon.',
+    'Sovereign haute-streetwear atelier. Engineered technical outerwear, avant-garde silhouettes, and kinetic runway motion in matte black, milk white, and acid neon.',
   openGraph: {
     title: 'OXID STUDIO — Luxury Technical Streetwear Atelier',
     description:
-      'Sovereign haute-streetwear atelier. Engineered technical outerwear, avant-garde silhouettes, and 120BPM runway motion.',
+      'Sovereign haute-streetwear atelier. Engineered technical outerwear, avant-garde silhouettes, and kinetic runway motion.',
     url: 'https://oxid.studio',
     siteName: 'OXID STUDIO',
     images: [
