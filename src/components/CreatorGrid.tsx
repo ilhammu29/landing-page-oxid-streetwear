@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -11,6 +12,7 @@ if (typeof window !== 'undefined') {
 interface LookItem {
   id: string;
   code: string;
+  jp: string;
   name: string;
   category: string;
   image: string;
@@ -20,204 +22,230 @@ interface LookItem {
   marginTop: number;
 }
 
-// 7 Sovereign Streetwear Looks from OXID STUDIO Nano Banana Pro Atelier
+// 7 Sovereign Streetwear Looks from OXID STUDIO Atelier
 const LOOKS: LookItem[] = [
   {
     id: 'look-01',
-    code: 'OX-01 Tactical',
+    code: 'OX-01',
+    jp: '戦術パーカー',
     name: 'Ballistic Parka Shell',
     category: 'Outerwear',
     image: '/fashion/look1.jpg',
     spec: 'Cordura 500D · DWR Coating',
     width: 390,
-    height: 490,
-    marginTop: 60,
+    height: 500,
+    marginTop: 40,
   },
   {
     id: 'look-02',
-    code: 'OX-02 Kimono',
+    code: 'OX-02',
+    jp: 'サイバー着物',
     name: 'Cyber Atelier Drape',
     category: 'Avant-Garde',
     image: '/fashion/look2.jpg',
     spec: 'Laser Seams · Acid Webbing',
-    width: 430,
-    height: 540,
-    marginTop: -30,
+    width: 440,
+    height: 550,
+    marginTop: -25,
   },
   {
     id: 'look-03',
-    code: 'OX-03 Modular',
+    code: 'OX-03',
+    jp: '戦術リグ',
     name: 'Tactical Chest Rig',
     category: 'Hardware',
     image: '/fashion/look3.jpg',
     spec: 'Fidlock® Buckles · Molle Matrix',
-    width: 580,
-    height: 580,
-    marginTop: 70,
+    width: 520,
+    height: 540,
+    marginTop: 50,
   },
   {
     id: 'look-04',
-    code: 'OX-04 Runway',
+    code: 'OX-04',
+    jp: 'レーザーカーゴ',
     name: 'Laser Bungee Cargos',
     category: 'Trousers',
     image: '/fashion/look4.jpg',
     spec: 'Articulated Knee · Kinetic Fit',
-    width: 360,
-    height: 460,
-    marginTop: -80,
+    width: 380,
+    height: 480,
+    marginTop: -45,
   },
   {
     id: 'look-05',
-    code: 'OX-05 Director',
+    code: 'OX-05',
+    jp: 'ディレクターコート',
     name: 'Chiaroscuro Tailored Coat',
     category: 'Couture',
     image: '/fashion/look5.jpg',
     spec: 'Milk Collar · Sculptural Wool',
-    width: 340,
-    height: 440,
-    marginTop: 40,
+    width: 360,
+    height: 460,
+    marginTop: 35,
   },
   {
     id: 'look-06',
-    code: 'OX-06 Heavy',
+    code: 'OX-06',
+    jp: 'ヘビーフーディ',
     name: '500GSM Boxy Hoodie',
     category: 'Fleece',
     image: '/fashion/look6.jpg',
     spec: 'Milk White · Neon Screenprint',
-    width: 440,
-    height: 520,
-    marginTop: -40,
+    width: 430,
+    height: 530,
+    marginTop: -30,
   },
   {
     id: 'look-07',
-    code: 'OX-07 Sneaker',
+    code: 'OX-07',
+    jp: 'カーボンハイ',
     name: 'Carbon High-Top Unit',
     category: 'Footwear',
     image: '/fashion/look7.jpg',
     spec: 'Luminescent Sole · Carbon Plate',
-    width: 370,
+    width: 380,
     height: 470,
-    marginTop: 30,
+    marginTop: 20,
   },
 ];
 
 export function CreatorGrid() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const streamRef = useRef<HTMLDivElement>(null);
-  const cardElementsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const isHoveredRef = useRef(false);
-  const hoveredIndexRef = useRef<number | null>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const dragScrollStartRef = useRef(0);
 
-  // Double repeat for seamless infinite glitch-free wrapping
-  const items = [...LOOKS, ...LOOKS];
+  // Triple repeat for truly infinite seamless conveyor
+  const sets = [LOOKS, LOOKS, LOOKS];
+
+  // Animated scroll state in ref for 60fps buttery transform
+  const virtualScrollRef = useRef(0);
+  const speedRef = useRef(0.75);
+  const singleSetWidthRef = useRef(3200);
+
+  // Recalculate track geometry
+  const updateTrackMetrics = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const isMobile = window.innerWidth <= 768;
+    const scale = isMobile ? 0.68 : 1.0;
+    const gap = isMobile ? 32 : 56;
+
+    let setWidth = 0;
+    LOOKS.forEach((item) => {
+      setWidth += item.width * scale + gap;
+    });
+    singleSetWidthRef.current = setWidth;
+  }, []);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    updateTrackMetrics();
+    window.addEventListener('resize', updateTrackMetrics);
+    return () => window.removeEventListener('resize', updateTrackMetrics);
+  }, [updateTrackMetrics]);
 
-    const isMobile = window.innerWidth <= 768;
-    const scale = isMobile ? 0.65 : 1.0;
-    const gap = isMobile ? 40 : 60;
-
-    // Precalculate cumulative track positions
-    let cumulative = 0;
-    const offsets: number[] = [];
-    const widths: number[] = [];
-
-    items.forEach((item, idx) => {
-      const w = item.width * scale;
-      offsets.push(cumulative);
-      widths.push(w);
-      cumulative += w + gap;
-
-      const el = cardElementsRef.current[idx];
-      if (el) {
-        el.style.width = `${w}px`;
-        el.style.height = `${item.height * scale}px`;
-        el.style.marginTop = `${item.marginTop * scale}px`;
-      }
-    });
-
-    const totalTrackLength = cumulative;
+  useEffect(() => {
+    if (!trackRef.current || !containerRef.current) return;
 
     let animId: number;
-    let virtualScroll = 0;
     let lastTime = performance.now();
-    let scrollVelocityBonus = 0;
+    let scrollBoost = 0;
 
-    // Track scroll velocity via ScrollTrigger to dynamically accelerate conveyor
+    // Connect ScrollTrigger velocity for dynamic physics response
     const scrollTrigger = ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top bottom',
       end: 'bottom top',
       onUpdate: (self) => {
         const vel = self.getVelocity();
-        scrollVelocityBonus += Math.abs(vel) * 0.0004;
+        scrollBoost += Math.abs(vel) * 0.00035;
       },
     });
 
-    const tick = (now: number) => {
-      const dt = now - lastTime;
+    const renderLoop = (now: number) => {
+      const dt = Math.min(now - lastTime, 40);
       lastTime = now;
 
-      // Smooth decay of scroll boost
-      scrollVelocityBonus *= 0.93;
+      scrollBoost *= 0.94;
 
-      // Base speed: when hovered, slow to 0.04 (almost frozen); otherwise smooth glide
-      const speedMultiplier = isHoveredRef.current ? 0.04 : 0.85 + scrollVelocityBonus;
-      virtualScroll += dt * speedMultiplier * 0.08;
+      if (!isDraggingRef.current) {
+        const activeSpeed = isPaused ? 0.05 : speedRef.current + scrollBoost;
+        virtualScrollRef.current += dt * activeSpeed * 0.07;
+      }
 
-      const currentScroll = virtualScroll % totalTrackLength;
+      const singleWidth = singleSetWidthRef.current || 3200;
+      // Flawless modulo: normalize to [0, singleWidth)
+      const currentOffset = ((virtualScrollRef.current % singleWidth) + singleWidth) % singleWidth;
 
-      // 100% Glitch-free modulo wrapping algorithm
-      cardElementsRef.current.forEach((el, idx) => {
-        if (!el) return;
-        const w = widths[idx];
-        const initialX = offsets[idx];
+      if (trackRef.current) {
+        trackRef.current.style.transform = `translate3d(-${currentOffset}px, 0, 0)`;
+      }
 
-        let posX = (initialX - currentScroll) % totalTrackLength;
-        // If card scrolls past left edge, wrap around seamlessly to right edge
-        if (posX < -w - gap) {
-          posX += totalTrackLength;
-        }
-
-        // Sinusoidal vertical floating wave
-        const waveY = Math.sin(initialX * 0.002 + virtualScroll * 0.0008) * (isMobile ? 18 : 32);
-
-        el.style.transform = `translateX(${posX}px) translateY(calc(-50% + ${waveY}px))`;
-
-        const isCurrentHover = hoveredIndexRef.current === idx;
-        const targetZ = isCurrentHover ? 260 : 100 + (idx % 20);
-        if (el.style.zIndex !== `${targetZ}`) {
-          el.style.zIndex = `${targetZ}`;
-        }
-      });
-
-      animId = requestAnimationFrame(tick);
+      animId = requestAnimationFrame(renderLoop);
     };
 
-    animId = requestAnimationFrame(tick);
+    animId = requestAnimationFrame(renderLoop);
 
     return () => {
       cancelAnimationFrame(animId);
       scrollTrigger.kill();
     };
-  }, [items]);
+  }, [isPaused]);
+
+  // Touch and Mouse Drag interactions
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isDraggingRef.current = true;
+    startXRef.current = e.clientX;
+    dragScrollStartRef.current = virtualScrollRef.current;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDraggingRef.current) return;
+    const deltaX = startXRef.current - e.clientX;
+    virtualScrollRef.current = dragScrollStartRef.current + deltaX * 1.5;
+  };
+
+  const handleMouseUp = () => {
+    isDraggingRef.current = false;
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    isDraggingRef.current = true;
+    startXRef.current = e.touches[0].clientX;
+    dragScrollStartRef.current = virtualScrollRef.current;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) return;
+    const deltaX = startXRef.current - e.touches[0].clientX;
+    virtualScrollRef.current = dragScrollStartRef.current + deltaX * 1.5;
+  };
+
+  const handleTouchEnd = () => {
+    isDraggingRef.current = false;
+  };
+
+  const nudgeConveyor = (direction: -1 | 1) => {
+    virtualScrollRef.current += direction * 450;
+  };
 
   return (
     <section
       id="creator-grid"
       ref={containerRef}
-      className="relative w-full overflow-hidden select-none bg-[#0a0a0c]"
+      className="relative w-full overflow-hidden select-none bg-[#0a0a0c] pt-24 pb-20"
       style={{
-        minHeight: '1080px',
+        minHeight: '1000px',
         backgroundImage: `
-          radial-gradient(80% 80% at 50% 50%, rgba(0, 255, 102, 0.07) 0%, rgba(10, 10, 12, 0) 70%),
-          radial-gradient(120% 120% at 10% 20%, rgba(24, 24, 27, 0.9) 0%, rgba(10, 10, 12, 1) 100%)
+          radial-gradient(75% 75% at 50% 50%, rgba(0, 255, 102, 0.05) 0%, rgba(10, 10, 12, 0) 70%),
+          radial-gradient(120% 120% at 20% 10%, rgba(20, 20, 24, 0.8) 0%, rgba(10, 10, 12, 1) 100%)
         `,
       }}
     >
-      {/* Background Cyber Grid Lines */}
+      {/* Background Cyber Blueprint Grid Lines */}
       <div
         className="absolute inset-0 opacity-15 pointer-events-none"
         style={{
@@ -229,108 +257,133 @@ export function CreatorGrid() {
         }}
       />
 
-      {/* Top Left Split Headline with mix-blend-exclusion */}
-      <h2 className="absolute left-6 sm:left-14 md:left-20 top-16 sm:top-24 z-30 pointer-events-none text-[#faf9f6] mix-blend-exclusion leading-[0.85] tracking-[-0.05em] font-display font-extrabold text-5xl sm:text-7xl md:text-8xl lg:text-[8.5rem] uppercase select-none">
-        <span className="block text-[#faf9f6]">ATELIER</span>
-        <span className="block text-[#00ff66]">COUTURE</span>
-      </h2>
-
-      {/* Bottom Right Split Headline with mix-blend-exclusion */}
-      <h2 className="absolute right-6 sm:right-14 md:right-20 bottom-16 sm:bottom-24 z-30 pointer-events-none text-[#faf9f6] mix-blend-exclusion leading-[0.85] tracking-[-0.05em] font-display font-extrabold text-5xl sm:text-7xl md:text-8xl lg:text-[8.5rem] uppercase select-none text-right">
-        <span className="block text-[#00ff66]">OXID</span>
-        <span className="block text-[#faf9f6]">DROPS</span>
-      </h2>
-
-      {/* Bottom Left Paragraph Copy with mix-blend-exclusion */}
-      <div className="absolute left-6 sm:left-14 md:left-20 bottom-16 sm:bottom-24 z-30 pointer-events-none text-[#f5f5f0] mix-blend-exclusion max-w-sm sm:max-w-md select-none text-sm sm:text-base font-mono leading-relaxed">
-        <div className="text-[#00ff66] font-bold text-xs uppercase tracking-widest mb-1.5">
-          Archive Collection 01 — 07
+      {/* Top Left Headline: ATELIER COUTURE */}
+      <div className="absolute left-6 sm:left-14 md:left-20 top-14 sm:top-20 z-30 pointer-events-none mix-blend-exclusion">
+        <div className="text-[11px] font-mono tracking-widest text-[#00ff66] uppercase mb-1 flex items-center gap-2">
+          <span>02 ARCHIVE COLLECTION</span>
+          <span className="text-[#a1a1aa]">·</span>
+          <span>アーカイブ</span>
         </div>
-        Engineered for high-density environments. Every garment is cut from ballistic cordura, technical membranes, and magnetic hardware in limited sovereign runs.
+        <h2 className="text-[#faf9f6] leading-[0.85] tracking-[-0.05em] font-display font-extrabold text-5xl sm:text-7xl md:text-8xl lg:text-[8rem] uppercase">
+          <span className="block text-[#faf9f6]">ATELIER</span>
+          <span className="block text-[#00ff66]">COUTURE</span>
+        </h2>
       </div>
 
-      {/* Flowing Streetwear Conveyor Riding Through the Center */}
+      {/* Bottom Right Headline: OXID DROPS */}
+      <div className="absolute right-6 sm:right-14 md:right-20 bottom-12 sm:bottom-16 z-30 pointer-events-none mix-blend-exclusion text-right">
+        <h2 className="text-[#faf9f6] leading-[0.85] tracking-[-0.05em] font-display font-extrabold text-5xl sm:text-7xl md:text-8xl lg:text-[8rem] uppercase">
+          <span className="block text-[#00ff66]">OXID</span>
+          <span className="block text-[#faf9f6]">DROPS</span>
+        </h2>
+        <div className="text-[11px] font-mono tracking-widest text-[#a1a1aa] uppercase mt-2">
+          TOKYO · PARIS · SOVEREIGN SPEC
+        </div>
+      </div>
+
+      {/* Manual Conveyor Controls */}
+      <div className="absolute right-6 sm:right-14 md:right-20 top-14 sm:top-20 z-30 flex items-center gap-2">
+        <button
+          onClick={() => nudgeConveyor(-1)}
+          className="w-11 h-11 rounded-none border border-[#27272a] bg-[#121214]/80 backdrop-blur-md flex items-center justify-center text-[#faf9f6] hover:text-[#00ff66] hover:border-[#00ff66] transition shadow-lg cursor-pointer"
+          aria-label="Previous look"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => nudgeConveyor(1)}
+          className="w-11 h-11 rounded-none border border-[#27272a] bg-[#121214]/80 backdrop-blur-md flex items-center justify-center text-[#faf9f6] hover:text-[#00ff66] hover:border-[#00ff66] transition shadow-lg cursor-pointer"
+          aria-label="Next look"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Main Continuous Glitch-Free Conveyor Stream */}
       <div
-        ref={streamRef}
-        className="relative w-full h-[1080px] overflow-hidden"
-        onMouseEnter={() => {
-          isHoveredRef.current = true;
-        }}
+        className="relative w-full h-[760px] sm:h-[840px] my-auto overflow-hidden flex items-center cursor-grab active:cursor-grabbing"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => {
-          isHoveredRef.current = false;
-          hoveredIndexRef.current = null;
+          setIsPaused(false);
+          isDraggingRef.current = false;
           setHoveredIdx(null);
         }}
       >
-        {items.map((c, i) => {
-          const isCurrentHovered = hoveredIdx === i;
-          return (
-            <div
-              key={`${c.id}-${i}`}
-              ref={(el) => {
-                cardElementsRef.current[i] = el;
-              }}
-              onMouseEnter={() => {
-                hoveredIndexRef.current = i;
-                setHoveredIdx(i);
-              }}
-              onMouseLeave={() => {
-                if (hoveredIndexRef.current === i) {
-                  hoveredIndexRef.current = null;
-                  setHoveredIdx(null);
-                }
-              }}
-              className="creator absolute top-1/2 left-0 will-change-transform cursor-pointer group rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 border border-[#27272a] hover:border-[#00ff66] hover:shadow-[0_0_35px_rgba(0,255,102,0.4)]"
-              style={{
-                width: `${c.width}px`,
-                height: `${c.height}px`,
-                marginTop: `${c.marginTop}px`,
-              }}
-            >
-              <div className="block w-full h-full relative bg-[#121214]">
-                <img
-                  src={c.image}
-                  alt={c.name}
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter brightness-[0.92] contrast-[1.1] group-hover:brightness-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c]/90 via-[#0a0a0c]/20 to-transparent pointer-events-none" />
+        {/* Continuous Horizontal Strip Translating as ONE Unified Block */}
+        <div
+          ref={trackRef}
+          className="flex items-center gap-8 sm:gap-14 will-change-transform"
+        >
+          {sets.map((setArray, setIndex) => (
+            <div key={`set-${setIndex}`} className="flex items-center gap-8 sm:gap-14 shrink-0">
+              {setArray.map((look, i) => {
+                const uniqueKey = `${look.id}-s${setIndex}-${i}`;
+                const isLook2 = look.id === 'look-02';
 
-                {/* Bottom Garment Name Tag with Technical Specs */}
-                <div className="absolute bottom-5 left-5 right-5 z-10 flex items-end justify-between text-white">
-                  <div>
-                    <div className="text-[11px] font-mono text-[#00ff66] tracking-wider mb-0.5">
-                      {c.code}
-                    </div>
-                    <div className="text-lg sm:text-xl font-display font-bold tracking-tight text-[#faf9f6]">
-                      {c.name}
-                    </div>
-                    <div className="text-[11px] font-mono text-[#a1a1aa] mt-0.5">
-                      {c.spec}
-                    </div>
-                  </div>
-
-                  {/* Neon Quick Action Trigger */}
-                  <div className="w-10 h-10 rounded-full bg-[#18181b]/90 backdrop-blur-md border border-[#27272a] group-hover:border-[#00ff66] group-hover:bg-[#00ff66] text-[#f5f5f0] group-hover:text-black flex items-center justify-center transition-all duration-300 shadow-lg group-hover:scale-110 shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 19 19"
-                      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 9.5h10.5m-5.25 5.25L14.5 9.5 9.25 4.25"
+                return (
+                  <div
+                    key={uniqueKey}
+                    onMouseEnter={() => setHoveredIdx(i)}
+                    onMouseLeave={() => setHoveredIdx(null)}
+                    className={`relative shrink-0 rounded-none overflow-hidden transition-all duration-300 border ${
+                      isLook2
+                        ? 'border-[#00ff66]/70 shadow-[0_0_30px_rgba(0,255,102,0.25)]'
+                        : 'border-[#27272a] hover:border-[#00ff66] hover:shadow-[0_0_30px_rgba(0,255,102,0.3)]'
+                    } group bg-[#111114]`}
+                    style={{
+                      width: `${look.width}px`,
+                      height: `${look.height}px`,
+                      marginTop: `${look.marginTop}px`,
+                    }}
+                  >
+                    {/* Look Image with Clean Pan-Zoom Hover */}
+                    <div className="w-full h-full relative overflow-hidden">
+                      <img
+                        src={look.image}
+                        alt={look.name}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter brightness-[0.92] contrast-[1.12] group-hover:brightness-105"
                       />
-                    </svg>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-[#0a0a0c]/25 to-transparent pointer-events-none" />
+
+                      {/* Top Japanese Watermark / Spec Index */}
+                      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between text-[11px] font-mono">
+                        <span className="text-[#00ff66] font-bold tracking-wider">
+                          {look.code} · {look.jp}
+                        </span>
+                        <span className="text-[#71717a] uppercase tracking-widest text-[9px]">
+                          {look.category}
+                        </span>
+                      </div>
+
+                      {/* Bottom Technical Spec Information Card */}
+                      <div className="absolute bottom-5 left-5 right-5 z-10 flex items-end justify-between">
+                        <div>
+                          <div className="text-lg sm:text-xl font-display font-bold tracking-tight text-[#faf9f6] group-hover:text-[#00ff66] transition-colors">
+                            {look.name}
+                          </div>
+                          <div className="text-xs font-mono text-[#a1a1aa] mt-1 flex items-center gap-2">
+                            <span>{look.spec}</span>
+                          </div>
+                        </div>
+
+                        {/* Quick View Trigger Button */}
+                        <div className="w-10 h-10 rounded-none bg-[#18181b]/90 border border-[#27272a] group-hover:border-[#00ff66] group-hover:bg-[#00ff66] text-[#faf9f6] group-hover:text-black flex items-center justify-center transition-all duration-300 shrink-0">
+                          <ArrowUpRight className="w-4 h-4" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
     </section>
   );

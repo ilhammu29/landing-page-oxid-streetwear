@@ -483,10 +483,11 @@ export function HeroSlider({ onNavigate, onOpenAuth }: HeroSliderProps) {
 
       {/* Bottom Control Row */}
       <div className="relative z-20 max-w-[1440px] w-full mx-auto px-6 sm:px-12 flex items-center justify-between">
-        <div className="text-xs font-mono text-[#a1a1aa] tracking-widest flex items-center gap-2">
+        <div className="text-xs font-mono text-[#a1a1aa] tracking-widest flex items-center gap-2 select-none">
           <span className="text-[#00ff66] font-bold">0{activeIdx + 1}</span>
           <span>/</span>
           <span>0{SLIDES.length}</span>
+          <span className="text-[#52525b] ml-2 hidden sm:inline">AUTONOMOUS ATELIER</span>
         </div>
 
         {/* Bouncing Arrow Down Button */}
@@ -510,21 +511,8 @@ export function HeroSlider({ onNavigate, onOpenAuth }: HeroSliderProps) {
           </svg>
         </button>
 
-        {/* Slide Indicator Line Pills */}
-        <div className="flex items-center gap-2">
-          {SLIDES.map((_, i) => (
-            <button
-              key={i}
-              onClick={(e) => {
-                e.stopPropagation();
-                changeSlide(i);
-              }}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                i === activeIdx ? 'w-8 bg-[#00ff66] shadow-[0_0_10px_#00ff66]' : 'w-2.5 bg-[#27272a] hover:bg-[#52525b]'
-              }`}
-              aria-label={`Jump to drop ${i + 1}`}
-            />
-          ))}
+        <div className="text-xs font-mono text-[#71717a] tracking-widest hidden sm:block select-none">
+          SWIPE / CLICK TO ADVANCE
         </div>
       </div>
     </section>

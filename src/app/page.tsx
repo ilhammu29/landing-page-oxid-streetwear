@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { AuthModal } from '@/components/AuthModal';
+import { IntroMotionCinema } from '@/components/IntroMotionCinema';
 import { HeroSlider } from '@/components/HeroSlider';
 import { CreatorGrid } from '@/components/CreatorGrid';
 import { FullBleedTestimonial } from '@/components/FullBleedTestimonial';
@@ -16,6 +17,7 @@ import { Footer } from '@/components/Footer';
 export default function Home() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
+  const [promoOpen, setPromoOpen] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -44,6 +46,12 @@ export default function Home() {
         style={{ scaleX }}
       />
 
+      {/* 15-Second Japanese Motion Cinema Opening Overlay */}
+      <IntroMotionCinema
+        forceOpen={promoOpen}
+        onClose={() => setPromoOpen(false)}
+      />
+
       {/* Global Authentication Modal */}
       <AuthModal
         isOpen={authOpen}
@@ -52,36 +60,37 @@ export default function Home() {
         onSwitchMode={(newMode) => setAuthMode(newMode)}
       />
 
-      {/* Global Patreon Header */}
+      {/* Global Redesigned Luxury Atelier Navbar */}
       <Navbar
         onNavigate={handleNavigate}
         onOpenAuth={handleOpenAuth}
+        onOpenPromo={() => setPromoOpen(true)}
       />
 
       {/* Exact 7-Module Structure of Patreon Homepage */}
       <main id="main-content">
-        {/* Module 1: Home Hero (Carousel of 8 Creators with looping videos & GSAP transition) */}
+        {/* Module 1: Home Hero (Carousel with direct runway videos & GSAP clip-path transitions) */}
         <HeroSlider
           onNavigate={handleNavigate}
           onOpenAuth={handleOpenAuth}
         />
 
-        {/* Module 2: Creator Grid (Infinite horizontal wave conveyor & "Creativity powered by fandom") */}
+        {/* Module 2: Creator Grid (Infinite glitch-free conveyor of 7 sovereign looks) */}
         <CreatorGrid />
 
-        {/* Module 3: Full-Bleed Parallax Testimonial (KAMAUU portrait with GSAP scrub) */}
+        {/* Module 3: Full-Bleed Parallax Testimonial (Atelier Director with GSAP scrub) */}
         <FullBleedTestimonial />
 
-        {/* Module 4: Complete creative control (Patreon's exact ImageGridWithTitle with differential card parallax) */}
+        {/* Module 4: Complete creative control (ImageGridWithTitle with differential card parallax) */}
         <ImageGridWithTitle />
 
-        {/* Module 5: "Creators. Fans. Nothing in between." with Chelsea video parallax */}
+        {/* Module 5: Direct Runway Film Showcase */}
         <FloatingProductUI />
 
-        {/* Module 6: "Turning passions into businesses" with Mobile Insights parallax */}
+        {/* Module 6: Atelier Telemetry & Cordura Allocation Terminal */}
         <BusinessParallax />
 
-        {/* Module 7: "Your world to create" with Official Animated Living Logomark */}
+        {/* Module 7: Grand Finale Call to Action */}
         <GrandFinaleCTA onOpenAuth={handleOpenAuth} />
       </main>
 

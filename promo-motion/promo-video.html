@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>OXID STUDIO — 15s Promo Motion</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #0a0a0c;
+      color: #faf9f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      overflow: hidden;
+      width: 1920px;
+      height: 1080px;
+    }
+    canvas {
+      display: block;
+      width: 1920px;
+      height: 1080px;
+      background: #0a0a0c;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="1920" height="1080"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const W = 1920;
+    const H = 1080;
+    const CX = W / 2;
+    const CY = H / 2;
+
+    const COLOR_BG = '#0a0a0c';
+    const COLOR_WHITE = '#faf9f6';
+    const COLOR_NEON = '#00ff66';
+    const COLOR_MUTED = '#52525b';
+    const COLOR_GRID = '#1c1c20';
+
+    // 120 BPM timings
+    const BPM = 120;
+    const BEAT_SEC = 60 / BPM; // 0.5s
+
+    // Pure mathematical easings
+    function clamp(val, min = 0, max = 1) {
+      return Math.min(Math.max(val, min), max);
+    }
+
+    function easeOutExpo(x) {
+      return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
+    }
+
+    function easeInExpo(x) {
+      return x <= 0 ? 0 : Math.pow(2, 10 * (x - 1));
+    }
+
+    function easeOutCubic(x) {
+      return 1 - Math.pow(1 - x, 3);
+    }
+
+    // Critical spring without bouncy template feel
+    function springSnap(t, omega = 18, zeta = 0.95) {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      const decay = Math.exp(-zeta * omega * t);
+      return 1 - decay * Math.cos(omega * t);
+    }
+
+    // Render function called by window.seek(t)
+    window.seek = function(t) {
+      t = Math.max(0, Math.min(15.0, t));
+
+      // Reset state and canvas
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = COLOR_BG;
+      ctx.fillRect(0, 0, W, H);
+
+      if (t >= 15.0) {
+        return; // Clean cut to black at 15.0s
+      }
+
+      const beatFloat = t / BEAT_SEC; // 0.0 to 30.0
+      const currentBeat = Math.floor(beatFloat);
+      const beatProg = beatFloat - currentBeat; // 0.0 to 1.0 within beat
+
+      // Top Header Telemetry
+      ctx.fillStyle = COLOR_MUTED;
+      ctx.font = '14px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(`OXID STUDIO / オキシド · AUTONOMOUS ATELIER`, 100, 70);
+      ctx.textAlign = 'right';
+      ctx.fillText(`120 BPM · TIME ${t.toFixed(3)}s · FRAME ${Math.floor(t * 60)}`, W - 100, 70);
+      ctx.textAlign = 'left';
+
+      // Draw subtle brutalist outer guide grid
+      ctx.strokeStyle = COLOR_GRID;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      const crossSize = 12;
+      const margins = [100, 100, W - 100, H - 100];
+      const pts = [
+        [margins[0], margins[1]],
+        [margins[2], margins[1]],
+        [margins[0], margins[3]],
+        [margins[2], margins[3]]
+      ];
+      pts.forEach(([px, py]) => {
+        ctx.moveTo(px - crossSize, py);
+        ctx.lineTo(px + crossSize, py);
+        ctx.moveTo(px, py - crossSize);
+        ctx.lineTo(px, py + crossSize);
+      });
+      ctx.stroke();
+
+      // Motion speed blur calculator for fast moves
+      const speed = Math.abs(Math.sin(t * Math.PI * 4)) * (1 - beatProg);
+      if (speed > 0.4) {
+        const blurOffset = (speed - 0.4) * 12;
+        ctx.strokeStyle = 'rgba(0, 255, 102, 0.15)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(CX - 400 - blurOffset, CY);
+        ctx.lineTo(CX + 400 + blurOffset, CY);
+        ctx.stroke();
+      }
+
+      // ============================================================
+      // SCENE 1: HOOK (0.00s - 2.00s, Beats 0 - 3)
+      // Visual: Expanding white core chassis -> Split columns -> Brand hook
+      // ============================================================
+      if (t < 2.0) {
+        const p1 = clamp(t / 0.5); // Beat 0
+        const p2 = clamp((t - 0.5) / 0.5); // Beat 1
+        const p3 = clamp((t - 1.0) / 0.5); // Beat 2
+        const p4 = clamp((t - 1.5) / 0.5); // Beat 3
+
+        // Central Transforming Frame
+        let fw = 24 + easeOutExpo(p1) * 380 + easeOutExpo(p2) * 600;
+        let fh = 24 + easeOutExpo(p1) * 140;
+
+        ctx.strokeStyle = COLOR_WHITE;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(CX - fw / 2, CY - fh / 2, fw, fh);
+
+        // Neon Accent Corner Mark
+        ctx.fillStyle = COLOR_NEON;
+        ctx.fillRect(CX - fw / 2 - 3, CY - fh / 2 - 3, 14, 14);
+
+        if (p1 > 0.1 && p2 <= 0.2) {
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = 'bold 72px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('主権', CX, CY);
+        }
+
+        if (p2 > 0.1) {
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = 'bold 64px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('ストリートウェア', CX, CY - 20);
+
+          ctx.fillStyle = COLOR_NEON;
+          ctx.font = 'bold 22px monospace';
+          ctx.fillText('SOVEREIGN STREETWEAR', CX, CY + 45);
+        }
+
+        if (p3 > 0.1) {
+          // Frame splits vertically
+          const splitOffset = easeOutExpo(p3) * 60;
+          ctx.strokeStyle = COLOR_NEON;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(CX - fw / 2, CY - splitOffset);
+          ctx.lineTo(CX + fw / 2, CY - splitOffset);
+          ctx.moveTo(CX - fw / 2, CY + splitOffset);
+          ctx.lineTo(CX + fw / 2, CY + splitOffset);
+          ctx.stroke();
+
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = '900 84px sans-serif';
+          ctx.fillText('OXID STUDIO', CX, CY);
+          ctx.fillStyle = COLOR_NEON;
+          ctx.font = '18px monospace';
+          ctx.fillText('オキシド・スタジオ · TOKYO / PARIS', CX, CY + 60);
+        }
+      }
+
+      // ============================================================
+      // SCENE 2: STRENGTH 1 — AUTONOMOUS ATELIER (2.00s - 4.00s, Beats 4 - 7)
+      // Visual: Massive screen-wide chassis with coordinate columns
+      // ============================================================
+      else if (t < 4.0) {
+        const localT = t - 2.0;
+        const b0 = clamp(localT / 0.5);
+        const b1 = clamp((localT - 0.5) / 0.5);
+        const b2 = clamp((localT - 1.0) / 0.5);
+        const b3 = clamp((localT - 1.5) / 0.5);
+
+        // Huge Outer Chassis
+        const frameW = 1000 + easeOutExpo(b0) * 720;
+        const frameH = 200 + easeOutExpo(b0) * 620;
+
+        ctx.strokeStyle = COLOR_WHITE;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(CX - frameW / 2, CY - frameH / 2, frameW, frameH);
+
+        // 3 Vertical Coordinate Columns
+        if (b1 > 0.05) {
+          const colX1 = CX - frameW / 6;
+          const colX2 = CX + frameW / 6;
+          ctx.strokeStyle = COLOR_GRID;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(colX1, CY - frameH / 2);
+          ctx.lineTo(colX1, CY + frameH / 2);
+          ctx.moveTo(colX2, CY - frameH / 2);
+          ctx.lineTo(colX2, CY + frameH / 2);
+          ctx.stroke();
+
+          // Active Center Column Accent
+          ctx.strokeStyle = COLOR_NEON;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(colX1, CY - frameH / 2, colX2 - colX1, frameH);
+        }
+
+        // Main Japanese Strength Text
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = '900 96px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('自律型アトリエ', CX, CY - 40);
+
+        ctx.fillStyle = COLOR_NEON;
+        ctx.font = 'bold 36px monospace';
+        ctx.fillText('AUTONOMOUS ATELIER', CX, CY + 50);
+
+        if (b2 > 0.1) {
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = 'bold 44px sans-serif';
+          ctx.fillText('仲介者ゼロ · ZERO GATEKEEPERS', CX, CY + 130);
+        }
+
+        if (b3 > 0.1) {
+          // Direct Access High-Speed Indicator
+          ctx.fillStyle = COLOR_NEON;
+          ctx.font = 'bold 20px monospace';
+          ctx.fillText('DIRECT RUNWAY ACCESS [ PASS 01-07 ]', CX, CY + 200);
+        }
+      }
+
+      // ============================================================
+      // SCENE 3: STRENGTH 2 — BALLISTIC CORDURA 500D (4.00s - 6.00s, Beats 8 - 11)
+      // Visual: High-density textile weave matrix + technical DWR spec
+      // ============================================================
+      else if (t < 6.0) {
+        const localT = t - 4.0;
+        const b0 = clamp(localT / 0.5);
+        const b1 = clamp((localT - 0.5) / 0.5);
+        const b2 = clamp((localT - 1.0) / 0.5);
+        const b3 = clamp((localT - 1.5) / 0.5);
+
+        // Textile Weave Grid Lines
+        const gridW = 900;
+        const gridH = 460;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(CX - gridW / 2, CY - gridH / 2, gridW, gridH);
+        ctx.clip();
+
+        // Horizontal and vertical dense ballistic lines
+        ctx.strokeStyle = '#27272a';
+        ctx.lineWidth = 1;
+        const lineSpacing = 24 - easeOutExpo(b0) * 8;
+        for (let x = CX - gridW / 2; x <= CX + gridW / 2; x += lineSpacing) {
+          ctx.beginPath();
+          ctx.moveTo(x, CY - gridH / 2);
+          ctx.lineTo(x, CY + gridH / 2);
+          ctx.stroke();
+        }
+        for (let y = CY - gridH / 2; y <= CY + gridH / 2; y += lineSpacing) {
+          ctx.beginPath();
+          ctx.moveTo(CX - gridW / 2, y);
+          ctx.lineTo(CX + gridW / 2, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // Outer Bounding Frame
+        ctx.strokeStyle = COLOR_NEON;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(CX - gridW / 2, CY - gridH / 2, gridW, gridH);
+
+        // Strength 2 Typography
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = '900 90px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('コーデュラ 500D', CX, CY - 50);
+
+        ctx.fillStyle = COLOR_NEON;
+        ctx.font = 'bold 32px monospace';
+        ctx.fillText('BALLISTIC CORDURA · 500D', CX, CY + 30);
+
+        if (b1 > 0.1) {
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = 'bold 36px sans-serif';
+          ctx.fillText('耐候性外殻 · WEATHERPROOF SHELL', CX, CY + 100);
+        }
+
+        if (b2 > 0.1) {
+          ctx.fillStyle = COLOR_NEON;
+          ctx.font = 'bold 20px monospace';
+          ctx.fillText('DWR 防護性能 · WATER-REPELLENT SURFACE', CX, CY + 160);
+        }
+      }
+
+      // ============================================================
+      // SCENE 4: STRENGTH 3 — FIDLOCK® MAGNETIC FASTENERS (6.00s - 8.00s, Beats 12 - 15)
+      // Visual: Dual magnetic latch halves snapping together
+      // ============================================================
+      else if (t < 8.0) {
+        const localT = t - 6.0;
+        const b0 = clamp(localT / 0.5);
+        const b1 = clamp((localT - 0.5) / 0.5);
+        const b2 = clamp((localT - 1.0) / 0.5);
+        const b3 = clamp((localT - 1.5) / 0.5);
+
+        // Magnetic latch halves closing with high speed
+        const gap = (1 - easeOutExpo(b0)) * 240;
+        const latchW = 600;
+        const latchH = 140;
+
+        // Left Half
+        ctx.fillStyle = '#141418';
+        ctx.strokeStyle = COLOR_WHITE;
+        ctx.lineWidth = 3;
+        ctx.fillRect(CX - latchW - gap / 2, CY - latchH / 2, latchW, latchH);
+        ctx.strokeRect(CX - latchW - gap / 2, CY - latchH / 2, latchW, latchH);
+
+        // Right Half
+        ctx.fillRect(CX + gap / 2, CY - latchH / 2, latchW, latchH);
+        ctx.strokeRect(CX + gap / 2, CY - latchH / 2, latchW, latchH);
+
+        // Magnetic core lock
+        if (b0 > 0.8) {
+          ctx.fillStyle = COLOR_NEON;
+          ctx.fillRect(CX - 24, CY - latchH / 2, 48, latchH);
+        }
+
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = '900 84px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('フィドロック磁気機構', CX, CY - 160);
+
+        ctx.fillStyle = COLOR_NEON;
+        ctx.font = 'bold 32px monospace';
+        ctx.fillText('FIDLOCK® MAGNETIC FASTENERS', CX, CY - 85);
+
+        if (b1 > 0.1) {
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = 'bold 42px sans-serif';
+          ctx.fillText('瞬時着脱 · QUICK RELEASE HARDWARE', CX, CY + 140);
+        }
+
+        if (b2 > 0.1) {
+          ctx.fillStyle = COLOR_NEON;
+          ctx.font = 'bold 20px monospace';
+          ctx.fillText('GERMAN TACTICAL ENGINEERING · 45MM MATRIX', CX, CY + 210);
+        }
+      }
+
+      // ============================================================
+      // SCENE 5: STRENGTH 4 — ENCRYPTED NFC PROVENANCE (8.00s - 10.00s, Beats 16 - 19)
+      // Visual: Concentric cryptographic antenna circuit + verification hash
+      // ============================================================
+      else if (t < 10.0) {
+        const localT = t - 8.0;
+        const b0 = clamp(localT / 0.5);
+        const b1 = clamp((localT - 0.5) / 0.5);
+        const b2 = clamp((localT - 1.0) / 0.5);
+        const b3 = clamp((localT - 1.5) / 0.5);
+
+        // Concentric antenna circuits
+        const outerR = 260;
+        ctx.strokeStyle = '#27272a';
+        ctx.lineWidth = 2;
+        for (let r = 80; r <= outerR; r += 36) {
+          ctx.strokeRect(CX - r, CY - r, r * 2, r * 2);
+        }
+
+        // Active pulsing chip
+        const chipSize = 100 + easeOutExpo(b0) * 40;
+        ctx.fillStyle = '#121216';
+        ctx.strokeStyle = COLOR_NEON;
+        ctx.lineWidth = 3;
+        ctx.fillRect(CX - chipSize / 2, CY - chipSize / 2, chipSize, chipSize);
+        ctx.strokeRect(CX - chipSize / 2, CY - chipSize / 2, chipSize, chipSize);
+
+        // Chip cross mark
+        ctx.fillStyle = COLOR_NEON;
+        ctx.fillRect(CX - 12, CY - 12, 24, 24);
+
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = '900 88px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('暗号化NFC認証', CX, CY - 240);
+
+        ctx.fillStyle = COLOR_NEON;
+        ctx.font = 'bold 30px monospace';
+        ctx.fillText('ENCRYPTED NFC PROVENANCE', CX, CY - 170);
+
+        if (b1 > 0.1) {
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = 'bold 40px sans-serif';
+          ctx.fillText('真贋証明 · PHYSICAL-DIGITAL PROOF', CX, CY + 230);
+        }
+
+        if (b2 > 0.1) {
+          ctx.fillStyle = COLOR_NEON;
+          ctx.font = 'bold 22px monospace';
+          ctx.fillText('HASH: 0x77F4·E8A9·OXID·VERIFIED', CX, CY + 290);
+        }
+      }
+
+      // ============================================================
+      // SCENE 6: STRENGTH 5 — KINETIC ARTICULATED FIT (10.00s - 12.00s, Beats 20 - 23)
+      // Visual: Articulated human kinetic mobility vectors & 3D angles
+      // ============================================================
+      else if (t < 12.0) {
+        const localT = t - 10.0;
+        const b0 = clamp(localT / 0.5);
+        const b1 = clamp((localT - 0.5) / 0.5);
+        const b2 = clamp((localT - 1.0) / 0.5);
+        const b3 = clamp((localT - 1.5) / 0.5);
+
+        // Kinetic Joint Vectors
+        const spread = easeOutExpo(b0) * 400;
+        ctx.strokeStyle = COLOR_WHITE;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        // Articulated limbs
+        ctx.moveTo(CX, CY - 180);
+        ctx.lineTo(CX - spread, CY - 40);
+        ctx.lineTo(CX - spread * 0.8, CY + 140);
+        ctx.moveTo(CX, CY - 180);
+        ctx.lineTo(CX + spread, CY - 40);
+        ctx.lineTo(CX + spread * 0.8, CY + 140);
+        ctx.stroke();
+
+        // Joint Pivot Points
+        const joints = [
+          [CX, CY - 180],
+          [CX - spread, CY - 40],
+          [CX - spread * 0.8, CY + 140],
+          [CX + spread, CY - 40],
+          [CX + spread * 0.8, CY + 140]
+        ];
+        joints.forEach(([jx, jy]) => {
+          ctx.fillStyle = COLOR_NEON;
+          ctx.beginPath();
+          ctx.arc(jx, jy, 8, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = '900 88px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('動体関節設計', CX, CY - 60);
+
+        ctx.fillStyle = COLOR_NEON;
+        ctx.font = 'bold 30px monospace';
+        ctx.fillText('KINETIC ERGONOMIC FIT', CX, CY + 10);
+
+        if (b1 > 0.1) {
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = 'bold 38px sans-serif';
+          ctx.fillText('都市型機動性 · METROPOLITAN MOBILITY', CX, CY + 220);
+        }
+
+        if (b2 > 0.1) {
+          ctx.fillStyle = COLOR_NEON;
+          ctx.font = 'bold 20px monospace';
+          ctx.fillText('HIGH-DENSITY ENVIRONMENT TAILORING', CX, CY + 280);
+        }
+      }
+
+      // ============================================================
+      // SCENE 7: BRAND RESOLUTION (12.00s - 14.00s, Beats 24 - 27)
+      // Visual: Monumental typography + Japanese katakana lockup
+      // ============================================================
+      else if (t < 14.0) {
+        const localT = t - 12.0;
+        const b0 = clamp(localT / 0.5);
+        const b1 = clamp((localT - 0.5) / 0.5);
+        const b2 = clamp((localT - 1.0) / 0.5);
+
+        // Huge Outer Registration Frame
+        const bw = 1400;
+        const bh = 540;
+        ctx.strokeStyle = COLOR_WHITE;
+        ctx.lineWidth = 4;
+        ctx.strokeRect(CX - bw / 2, CY - bh / 2, bw, bh);
+
+        // Neon corners
+        const cLen = 40;
+        ctx.strokeStyle = COLOR_NEON;
+        ctx.lineWidth = 6;
+        // Top Left
+        ctx.beginPath();
+        ctx.moveTo(CX - bw / 2, CY - bh / 2 + cLen);
+        ctx.lineTo(CX - bw / 2, CY - bh / 2);
+        ctx.lineTo(CX - bw / 2 + cLen, CY - bh / 2);
+        // Top Right
+        ctx.moveTo(CX + bw / 2 - cLen, CY - bh / 2);
+        ctx.lineTo(CX + bw / 2, CY - bh / 2);
+        ctx.lineTo(CX + bw / 2, CY - bh / 2 + cLen);
+        // Bottom Left
+        ctx.moveTo(CX - bw / 2, CY + bh / 2 - cLen);
+        ctx.lineTo(CX - bw / 2, CY + bh / 2);
+        ctx.lineTo(CX - bw / 2 + cLen, CY + bh / 2);
+        // Bottom Right
+        ctx.moveTo(CX + bw / 2 - cLen, CY + bh / 2);
+        ctx.lineTo(CX + bw / 2, CY + bh / 2);
+        ctx.lineTo(CX + bw / 2, CY + bh / 2 - cLen);
+        ctx.stroke();
+
+        // Monumental Brand Title
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = '900 130px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('OXID STUDIO', CX, CY - 60);
+
+        // Japanese Katakana Subtitle
+        ctx.fillStyle = COLOR_NEON;
+        ctx.font = '900 52px sans-serif';
+        ctx.fillText('オキシド・スタジオ', CX, CY + 55);
+
+        if (b1 > 0.1) {
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.font = 'bold 24px monospace';
+          ctx.fillText('AUTONOMOUS ATELIER · TOKYO & PARIS', CX, CY + 140);
+        }
+
+        if (b2 > 0.1) {
+          ctx.fillStyle = COLOR_NEON;
+          ctx.font = 'bold 16px monospace';
+          ctx.fillText('COLLECTION ARCHIVE DROP 01 — 07 AVAILABLE', CX, CY + 190);
+        }
+      }
+
+      // ============================================================
+      // SCENE 8: TAGLINE FINALE (14.00s - 15.00s, Beats 28 - 29)
+      // Visual: Single powerful line: 主権を、纏え。 / SOVEREIGN STREETWEAR
+      // ============================================================
+      else {
+        const localT = t - 14.0;
+        const b0 = clamp(localT / 0.5);
+
+        // Pure graphic balance with massive empty space
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = '900 96px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('主権を、纏え。', CX, CY - 40);
+
+        ctx.fillStyle = COLOR_NEON;
+        ctx.font = 'bold 36px monospace';
+        ctx.fillText('SOVEREIGN STREETWEAR', CX, CY + 50);
+
+        ctx.fillStyle = COLOR_MUTED;
+        ctx.font = '16px monospace';
+        ctx.fillText('OXIDSTUDIO.COM', CX, CY + 120);
+      }
+    };
+
+    // Default seek to 0
+    window.seek(0);
+  </script>
+</body>
+</html>
